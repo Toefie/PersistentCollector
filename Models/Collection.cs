@@ -13,5 +13,7 @@ namespace FirstMVC.Models
         public string Name { get; set; } = null!;
 
         public ICollection<Card> Cards { get; set; } = new List<Card>();
+
+
     }
 }

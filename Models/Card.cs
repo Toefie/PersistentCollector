@@ -15,6 +15,7 @@ namespace FirstMVC.Models
         public int CollectionId { get; set; }
 
         // Navigatie-eigenschap naar de collectie
-        public Collection Collection { get; set; } = null!;
+        public virtual Collection? Collection { get; set; } = null!;
+
     }
 }

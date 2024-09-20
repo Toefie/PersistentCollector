@@ -48,7 +48,7 @@ namespace FirstMVC.Controllers
         // GET: Cards/Create
         public IActionResult Create()
         {
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id");
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace FirstMVC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id", card.CollectionId);
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name", card.CollectionId);
             return View(card);
         }
 
@@ -82,7 +82,7 @@ namespace FirstMVC.Controllers
             {
                 return NotFound();
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id", card.CollectionId);
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name", card.CollectionId);
             return View(card);
         }
 
@@ -118,7 +118,7 @@ namespace FirstMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id", card.CollectionId);
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name", card.CollectionId);
             return View(card);
         }
 
