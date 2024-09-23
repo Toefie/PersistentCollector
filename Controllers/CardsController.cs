@@ -48,7 +48,7 @@ namespace FirstMVC.Controllers
         // GET: Cards/Create
         public IActionResult Create()
         {
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name");
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace FirstMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Price,Description,CollectionId")] Card card)
+        public async Task<IActionResult> Create([Bind("ID,Name,Price,Description,Psa,BuyDate,CurrentPrice,Specialty,CollectionId")] Card card)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace FirstMVC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name", card.CollectionId);
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id", card.CollectionId);
             return View(card);
         }
 
@@ -82,7 +82,7 @@ namespace FirstMVC.Controllers
             {
                 return NotFound();
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name", card.CollectionId);
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id", card.CollectionId);
             return View(card);
         }
 
@@ -91,7 +91,7 @@ namespace FirstMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price,Description,CollectionId")] Card card)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price,Description,Psa,BuyDate,CurrentPrice,Specialty,CollectionId")] Card card)
         {
             if (id != card.ID)
             {
@@ -118,7 +118,7 @@ namespace FirstMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Name", card.CollectionId);
+            ViewData["CollectionId"] = new SelectList(_context.Collections, "Id", "Id", card.CollectionId);
             return View(card);
         }
 
