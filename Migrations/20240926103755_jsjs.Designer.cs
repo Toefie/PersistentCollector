@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstMVC.Migrations
 {
     [DbContext(typeof(PCollectorDB))]
-    [Migration("20240919100651_UpdateCardModel")]
-    partial class UpdateCardModel
+    [Migration("20240926103755_jsjs")]
+    partial class jsjs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,13 @@ namespace FirstMVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("CollectionId")
+                    b.Property<DateTime>("BuyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CardCollectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentPrice")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -43,14 +49,34 @@ namespace FirstMVC.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(6, 2)");
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Psa")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Specialty")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
+                    b.ToTable("Cards");
+                });
+
+            modelBuilder.Entity("FirstMVC.Models.CardCollection", b =>
+                {
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CollectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardId", "CollectionId");
+
                     b.HasIndex("CollectionId");
 
-                    b.ToTable("Cards");
+                    b.ToTable("CardCollections");
                 });
 
             modelBuilder.Entity("FirstMVC.Models.Collection", b =>
@@ -60,6 +86,9 @@ namespace FirstMVC.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CardCollectionId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("InventoryID")
                         .HasColumnType("int");
@@ -92,13 +121,21 @@ namespace FirstMVC.Migrations
                     b.ToTable("Inventories");
                 });
 
-            modelBuilder.Entity("FirstMVC.Models.Card", b =>
+            modelBuilder.Entity("FirstMVC.Models.CardCollection", b =>
                 {
+                    b.HasOne("FirstMVC.Models.Card", "Card")
+                        .WithMany("CardCollections")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FirstMVC.Models.Collection", "Collection")
-                        .WithMany("Cards")
+                        .WithMany("CardCollections")
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Card");
 
                     b.Navigation("Collection");
                 });
@@ -110,9 +147,14 @@ namespace FirstMVC.Migrations
                         .HasForeignKey("InventoryID");
                 });
 
+            modelBuilder.Entity("FirstMVC.Models.Card", b =>
+                {
+                    b.Navigation("CardCollections");
+                });
+
             modelBuilder.Entity("FirstMVC.Models.Collection", b =>
                 {
-                    b.Navigation("Cards");
+                    b.Navigation("CardCollections");
                 });
 
             modelBuilder.Entity("FirstMVC.Models.Inventory", b =>

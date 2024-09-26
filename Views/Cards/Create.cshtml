@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" numberstep ="0.01"/>
+                <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -46,10 +46,6 @@
                 <label asp-for="Specialty" class="control-label"></label>
                 <input asp-for="Specialty" class="form-control" />
                 <span asp-validation-for="Specialty" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CollectionId" class="control-label"></label>
-                <select asp-for="CollectionId" class ="form-control" asp-items="ViewBag.CollectionId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

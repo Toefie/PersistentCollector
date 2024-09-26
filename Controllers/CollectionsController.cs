@@ -22,7 +22,8 @@ namespace FirstMVC.Controllers
         // GET: Collections
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Collections.ToListAsync());
+            var pCollectorDB = _context.Collections.Include(c => c.Inventory);
+            return View(await pCollectorDB.ToListAsync());
         }
 
         // GET: Collections/Details/5
@@ -34,6 +35,7 @@ namespace FirstMVC.Controllers
             }
 
             var collection = await _context.Collections
+                .Include(c => c.Inventory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (collection == null)
             {
@@ -46,6 +48,7 @@ namespace FirstMVC.Controllers
         // GET: Collections/Create
         public IActionResult Create()
         {
+            ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace FirstMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Collection collection)
+        public async Task<IActionResult> Create([Bind("Id,Name,InventoryID")] Collection collection)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace FirstMVC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID", collection.InventoryID);
             return View(collection);
         }
 
@@ -78,6 +82,7 @@ namespace FirstMVC.Controllers
             {
                 return NotFound();
             }
+            ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID", collection.InventoryID);
             return View(collection);
         }
 
@@ -86,7 +91,7 @@ namespace FirstMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Collection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,InventoryID")] Collection collection)
         {
             if (id != collection.Id)
             {
@@ -113,6 +118,7 @@ namespace FirstMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID", collection.InventoryID);
             return View(collection);
         }
 
@@ -125,6 +131,7 @@ namespace FirstMVC.Controllers
             }
 
             var collection = await _context.Collections
+                .Include(c => c.Inventory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (collection == null)
             {

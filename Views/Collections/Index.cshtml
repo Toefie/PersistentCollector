@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<FirstMVC.Models.Collection>
 
 @{
-    ViewData["Title"] = "Collection";
+    ViewData["Title"] = "Index";
 }
 
-<h1>Collection</h1>
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -15,6 +15,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Inventory)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -23,6 +26,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Inventory.ID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

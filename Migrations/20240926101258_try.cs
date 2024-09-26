@@ -1,15 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace FirstMVC.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateCardModel : Migration
+    public partial class @try : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Cards",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Psa = table.Column<int>(type: "int", nullable: false),
+                    BuyDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CurrentPrice = table.Column<int>(type: "int", nullable: false),
+                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CardCollectionId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cards", x => x.ID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Inventories",
                 columns: table => new
@@ -30,6 +51,7 @@ namespace FirstMVC.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CardCollectionId = table.Column<int>(type: "int", nullable: false),
                     InventoryID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -43,21 +65,24 @@ namespace FirstMVC.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cards",
+                name: "CardCollections",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(6,2)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CollectionId = table.Column<int>(type: "int", nullable: false)
+                    CardId = table.Column<int>(type: "int", nullable: false),
+                    CollectionId = table.Column<int>(type: "int", nullable: false),
+                    CardCollectionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cards", x => x.ID);
+                    table.PrimaryKey("PK_CardCollections", x => new { x.CardId, x.CollectionId });
                     table.ForeignKey(
-                        name: "FK_Cards_Collections_CollectionId",
+                        name: "FK_CardCollections_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CardCollections_Collections_CollectionId",
                         column: x => x.CollectionId,
                         principalTable: "Collections",
                         principalColumn: "Id",
@@ -65,8 +90,8 @@ namespace FirstMVC.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cards_CollectionId",
-                table: "Cards",
+                name: "IX_CardCollections_CollectionId",
+                table: "CardCollections",
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
@@ -78,6 +103,9 @@ namespace FirstMVC.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CardCollections");
+
             migrationBuilder.DropTable(
                 name: "Cards");
 
