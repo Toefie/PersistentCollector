@@ -13,6 +13,7 @@ namespace FirstMVC.Models
         public DateTime BuyDate { get; set; }
         public int CurrentPrice { get; set; }
         public string Specialty { get; set; }
+        public int CollectionId  { get; set; }
 
         // Navigatie-eigenschap naar de CardCollection (veel-op-veel-relatie)
         public ICollection<CardCollection> CardCollections { get; set; } = new List<CardCollection>();

@@ -9,7 +9,7 @@ namespace FirstMVC.Models
 
         // Foreign key naar Inventory (veel-op-een-relatie)
         public int InventoryID { get; set; }
-        public virtual Inventory Inventory { get; set; } = null!;
+        public virtual Inventory? Inventory { get; set; } = null!;
 
         // Navigatie-eigenschap naar de CardCollection (veel-op-veel-relatie)
         public ICollection<CardCollection> CardCollections { get; set; } = new List<CardCollection>();
