@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FirstMVC.Models.Card>
+﻿@model IEnumerable<FirstMVC.Models.CollectionCardView>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,69 +9,81 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Psa)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.Psa)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BuyDate)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.BuyDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CurrentPrice)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.CurrentPrice)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Specialty)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Card.Specialty)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CollectionId)
-            </th>
+            <th>Collections</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Psa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BuyDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Specialty)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CollectionId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Psa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.BuyDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.CurrentPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Specialty)
+                </td>
+                <td>
+                    @if (item.Collections != null && item.Collections.Any())
+                    {
+                        foreach (var collection in item.Collections)
+                        {
+                            <span>@collection.Name</span>
+
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <span>No Collections</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Card.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Card.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Card.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

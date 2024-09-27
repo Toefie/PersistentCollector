@@ -16,6 +16,7 @@ namespace FirstMVC.Models
         public int CollectionId  { get; set; }
 
         // Navigatie-eigenschap naar de CardCollection (veel-op-veel-relatie)
-        public ICollection<CardCollection> CardCollections { get; set; } = new List<CardCollection>();
+        
+        public virtual ICollection<Collection> Collections { get; set; }
     }
 }

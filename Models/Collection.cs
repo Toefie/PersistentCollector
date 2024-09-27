@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Policy;
 
 namespace FirstMVC.Models
 {
@@ -10,8 +11,7 @@ namespace FirstMVC.Models
         // Foreign key naar Inventory (veel-op-een-relatie)
         public int InventoryID { get; set; }
         public virtual Inventory? Inventory { get; set; } = null!;
-
-        // Navigatie-eigenschap naar de CardCollection (veel-op-veel-relatie)
-        public ICollection<CardCollection> CardCollections { get; set; } = new List<CardCollection>();
+        
+        public List <Card> Cards { get; set; } = new List<Card> ();
     }
 }
