@@ -36,7 +36,9 @@ namespace FirstMVC.Controllers
 
             var collection = await _context.Collections
                 .Include(c => c.Inventory)
+                .Include(c => c.Cards) // Include the Cards related to the Collection
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (collection == null)
             {
                 return NotFound();
@@ -49,23 +51,36 @@ namespace FirstMVC.Controllers
         public IActionResult Create()
         {
             ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID");
+            ViewData["Cards"] = new SelectList(_context.Cards, "ID", "Name"); // Provide available cards for selection
             return View();
         }
 
         // POST: Collections/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,InventoryID")] Collection collection)
+        public async Task<IActionResult> Create([Bind("Id,Name,InventoryID")] Collection collection, int[] selectedCards)
         {
             if (ModelState.IsValid)
             {
+                // Add selected cards to the collection
+                if (selectedCards != null)
+                {
+                    foreach (var cardId in selectedCards)
+                    {
+                        var card = await _context.Cards.FindAsync(cardId);
+                        if (card != null)
+                        {
+                            collection.Cards.Add(card);
+                        }
+                    }
+                }
+
                 _context.Add(collection);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID", collection.InventoryID);
+            ViewData["Cards"] = new SelectList(_context.Cards, "ID", "Name"); // Repopulate card list in case of error
             return View(collection);
         }
 
@@ -77,21 +92,24 @@ namespace FirstMVC.Controllers
                 return NotFound();
             }
 
-            var collection = await _context.Collections.FindAsync(id);
+            var collection = await _context.Collections
+                .Include(c => c.Cards) // Include existing cards in the collection
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (collection == null)
             {
                 return NotFound();
             }
+
             ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID", collection.InventoryID);
+            ViewData["Cards"] = new MultiSelectList(_context.Cards, "ID", "Name", collection.Cards.Select(c => c.ID)); // Preselect existing cards
             return View(collection);
         }
 
         // POST: Collections/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,InventoryID")] Collection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,InventoryID")] Collection collection, int[] selectedCards)
         {
             if (id != collection.Id)
             {
@@ -102,8 +120,32 @@ namespace FirstMVC.Controllers
             {
                 try
                 {
-                    _context.Update(collection);
-                    await _context.SaveChangesAsync();
+                    // Update the collection's cards
+                    var collectionToUpdate = await _context.Collections
+                        .Include(c => c.Cards)
+                        .FirstOrDefaultAsync(c => c.Id == id);
+
+                    if (collectionToUpdate != null)
+                    {
+                        collectionToUpdate.Name = collection.Name;
+                        collectionToUpdate.InventoryID = collection.InventoryID;
+
+                        // Clear existing cards
+                        collectionToUpdate.Cards.Clear();
+
+                        // Add the new selected cards
+                        foreach (var cardId in selectedCards)
+                        {
+                            var card = await _context.Cards.FindAsync(cardId);
+                            if (card != null)
+                            {
+                                collectionToUpdate.Cards.Add(card);
+                            }
+                        }
+
+                        _context.Update(collectionToUpdate);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,7 +160,9 @@ namespace FirstMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID", collection.InventoryID);
+            ViewData["Cards"] = new MultiSelectList(_context.Cards, "ID", "Name", selectedCards); // Repopulate cards in case of error
             return View(collection);
         }
 
@@ -132,7 +176,9 @@ namespace FirstMVC.Controllers
 
             var collection = await _context.Collections
                 .Include(c => c.Inventory)
+                .Include(c => c.Cards) // Include the cards in the collection
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (collection == null)
             {
                 return NotFound();
@@ -146,13 +192,17 @@ namespace FirstMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var collection = await _context.Collections.FindAsync(id);
+            var collection = await _context.Collections
+                .Include(c => c.Cards) // Include the cards for removal
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (collection != null)
             {
+                collection.Cards.Clear(); // Remove the cards from the collection before deleting
                 _context.Collections.Remove(collection);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

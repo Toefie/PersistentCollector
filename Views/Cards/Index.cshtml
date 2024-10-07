@@ -1,10 +1,35 @@
 ﻿@model IEnumerable<FirstMVC.Models.CollectionCardView>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pokedex";
 }
 
-<h1>Index</h1>
+<h1>Pokedex</h1>
+
+<!-- Zoekformulier voor filters -->
+<form method="get">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="searchString">Search by Name</label>
+            <input type="text" name="searchString" class="form-control" placeholder="Enter card name..." value="@Context.Request.Query["searchString"]" />
+        </div>
+        <div class="form-group col-md-2">
+            <label for="minPrice">Min Price</label>
+            <input type="number" name="minPrice" class="form-control" placeholder="Min Price" value="@Context.Request.Query["minPrice"]" />
+        </div>
+        <div class="form-group col-md-2">
+            <label for="maxPrice">Max Price</label>
+            <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" value="@Context.Request.Query["maxPrice"]" />
+        </div>
+        <div class="form-group col-md-2">
+            <label for="psa">PSA</label>
+            <input type="number" name="psa" class="form-control" placeholder="PSA value" value="@Context.Request.Query["psa"]" />
+        </div>
+        <div class="form-group col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -69,7 +94,6 @@
                         foreach (var collection in item.Collections)
                         {
                             <span>@collection.Name</span>
-
                             <br />
                         }
                     }

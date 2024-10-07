@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FirstMVC.Data;
 using FirstMVC.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FirstMVC.Controllers
 {
@@ -20,9 +18,39 @@ namespace FirstMVC.Controllers
         }
 
         // GET: Cards
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? minPrice, int? maxPrice, int? psa)
         {
-            var cards = await _context.Cards.Include(c => c.Collections).ToListAsync();
+            // Begin met een query van alle kaarten
+            var cardsQuery = _context.Cards.Include(c => c.Collections).AsQueryable();
+
+            // Filteren op zoekterm (naam van de kaart, case-insensitive)
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                cardsQuery = cardsQuery.Where(c => c.Name.ToLower().Contains(searchString.ToLower()));
+            }
+
+            // Filteren op minimum prijs
+            if (minPrice.HasValue)
+            {
+                cardsQuery = cardsQuery.Where(c => c.Price >= minPrice.Value);
+            }
+
+            // Filteren op maximum prijs
+            if (maxPrice.HasValue)
+            {
+                cardsQuery = cardsQuery.Where(c => c.Price <= maxPrice.Value);
+            }
+
+            // Filteren op PSA waarde
+            if (psa.HasValue)
+            {
+                cardsQuery = cardsQuery.Where(c => c.Psa == psa.Value);
+            }
+
+            // Haal de gefilterde kaarten op
+            var cards = await cardsQuery.ToListAsync();
+
+            // Maak een ViewModel voor elke kaart inclusief de collecties
             var viewModel = cards.Select(card => new CollectionCardView
             {
                 Card = card,

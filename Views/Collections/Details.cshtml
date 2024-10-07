@@ -4,27 +4,59 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.Name Collection</h1>
 
 <div>
-    <h4>Collection</h4>
+    <h4>Collection Details</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Inventory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Inventory.ID)
-        </dd>
+        <dt class="col-sm-2">Collection Name</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-2">Inventory ID</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.InventoryID)</dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <h4>Cards in this Collection</h4>
+    @if (Model.Cards != null && Model.Cards.Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>PSA</th>
+                    <th>Buy Date</th>
+                    <th>Current Price</th>
+                    <th>Specialty</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var card in Model.Cards)
+                {
+                    <tr>
+                        <td>@card.Name</td>
+                        <td>@card.Price</td>
+                        <td>@card.Description</td>
+                        <td>@card.Psa</td>
+                        <td>@card.BuyDate.ToString("dd-MM-yyyy")</td>
+                        <td>@card.CurrentPrice</td>
+                        <td>@card.Specialty</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No cards in this collection.</p>
+    }
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -2,19 +2,34 @@
     ViewData["Title"] = "Home Page";
 }
 
+<!-- Eerste sectie: voor de titel en knoppen -->
 <div class="text-center" style="background-color: #cc5500; padding: 20px; border-radius: 15px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
     <h1 class="display-4" style="font-family: 'Pokemon', sans-serif; color: #FFCB05;">
         PersistentCollector
     </h1>
-    <p style="font-family: 'Comic Sans MS', sans-serif; color: #3B4CCA; font-size: 20px;">
-        
-    </p>
-    <div>
-        <a href="#" class="btn" style="background-color: #EE273F; color: white; font-size: 18px; margin: 5px; border: 2px solid black;">
+    <div class="d-flex justify-content-center flex-wrap">
+        <!-- Catch 'Em All button navigates to the Cards Index page -->
+        <a href="@Url.Action("Index", "Cards")" class="btn" style="background-color: #EE273F; color: white; font-size: 18px; margin: 5px; border: 2px solid black;">
             Catch 'Em All!
         </a>
-        <a href="#" class="btn" style="background-color: #FFCB05; color: black; font-size: 18px; margin: 5px; border: 2px solid black;">
+        <!-- View Collection button navigates to the Collections Index page -->
+        <a href="@Url.Action("Index", "Collections")" class="btn" style="background-color: #FFCB05; color: black; font-size: 18px; margin: 5px; border: 2px solid black;">
             View Collection
         </a>
+    </div>
+</div>
+
+<!-- Tweede sectie: voor de afbeeldingen in het gele gedeelte -->
+<div class="text-center" style="background-color: #FFCB05; padding: 20px; border-radius: 15px; margin-top: 20px;">
+    <div class="row justify-content-center">
+        <div class="col-md-2"> <!--bootstrap grid waardoor fotos naast elkaar blijven en onder elkaar gaan bij kleinerbeeld-->
+            <img src="~/images/charmander.jpg" alt="Charmander" class="img-fluid" style="border-radius: 15px; margin: 10px; width: 150px; height: auto;">
+        </div>
+        <div class="col-md-2">
+            <img src="~/images/lucario.jpg" alt="Lucario" class="img-fluid" style="border-radius: 15px; margin: 10px; width: 150px; height: auto;">
+        </div>
+        <div class="col-md-2">
+            <img src="~/images/pikachu.jpg" alt="Pikachu" class="img-fluid" style="border-radius: 15px; margin: 10px; width: 150px; height: auto;">
+        </div>
     </div>
 </div>
