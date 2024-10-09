@@ -10,8 +10,9 @@ namespace FirstMVC
             var builder = WebApplication.CreateBuilder(args);
 
             // Voeg de databasecontext toe aan de DI-container
-            builder.Services.AddDbContext<PCollectorDB>();
-
+          //  builder.Services.AddDbContext<PCollectorDB>();
+            builder.Services.AddDbContext<PCollectorDB>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 

@@ -14,30 +14,19 @@ namespace FirstMVC.Data
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string connection = @"Data Source=.;Initial Catalog=ApplicationDbContextA2;Integrated Security=true;TrustServerCertificate=True;";
-            optionsBuilder.UseSqlServer(connection);
-        }
-
+        // Relaties configureren tussen modellen
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            // Collection to Category (one-to-many)
+            // Collection to Inventory (one-to-many)
             modelBuilder.Entity<Collection>()
                 .HasOne(c => c.Inventory)
-                .WithMany(c => c.Collections)
+                .WithMany(i => i.Collections)
                 .HasForeignKey(c => c.InventoryID);
 
-            // Category to Item (many-to-many)
+            // Card to Collection (many-to-many)
             modelBuilder.Entity<Card>()
                 .HasMany(c => c.Collections)
                 .WithMany(c => c.Cards);
         }
     }
 }
-            
-
-
-    
