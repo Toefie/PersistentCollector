@@ -50,9 +50,13 @@ namespace FirstMVC.Controllers
         // GET: Collections/Create
         public IActionResult Create()
         {
-            ViewData["InventoryID"] = new SelectList(_context.Inventories, "ID", "ID");
-            ViewData["Cards"] = new SelectList(_context.Cards, "ID", "Name"); // Provide available cards for selection
-            return View();
+            // Stel InventoryID standaard in op 1
+            var model = new Collection
+            {
+                InventoryID = 1
+            };
+
+            return View(model);
         }
 
         // POST: Collections/Create

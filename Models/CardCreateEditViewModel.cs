@@ -11,7 +11,7 @@
         public int CurrentPrice { get; set; }
         public string Specialty { get; set; }
 
-        // De geselecteerde collecties
-        public int[] SelectedCollections { get; set; }
+        
+        public string CollectionName { get; set; } // We gebruiken alleen de naam
     }
 }

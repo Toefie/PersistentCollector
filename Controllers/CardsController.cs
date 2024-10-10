@@ -80,14 +80,15 @@ namespace FirstMVC.Controllers
         // GET: Cards/Create
         public IActionResult Create()
         {
-            ViewData["Collections"] = new MultiSelectList(_context.Collections, "Id", "Name");
+            // Haal de collectie namen op in plaats van ID's
+            ViewBag.CollectionName = new SelectList(_context.Collections, "Name", "Name");
             return View("CreateEdit", new CardCreateEditViewModel());
         }
 
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Price,Description,Psa,BuyDate,CurrentPrice,Specialty,SelectedCollections")] CardCreateEditViewModel viewModel)
+        public async Task<IActionResult> Create([Bind("ID,Name,Price,Description,Psa,BuyDate,CurrentPrice,Specialty,CollectionName")] CardCreateEditViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +101,8 @@ namespace FirstMVC.Controllers
                     BuyDate = viewModel.BuyDate,
                     CurrentPrice = viewModel.CurrentPrice,
                     Specialty = viewModel.Specialty,
-                    Collections = _context.Collections.Where(c => viewModel.SelectedCollections.Contains(c.Id)).ToList()
+                    // Verbind de kaart aan de geselecteerde collectie
+                    Collections = _context.Collections.Where(c => c.Name == viewModel.CollectionName).ToList()
                 };
 
                 _context.Add(card);
@@ -108,7 +110,7 @@ namespace FirstMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Collections"] = new MultiSelectList(_context.Collections, "Id", "Name", viewModel.SelectedCollections);
+            ViewBag.CollectionName = new SelectList(_context.Collections, "Name", "Name", viewModel.CollectionName);
             return View("CreateEdit", viewModel);
         }
 
@@ -136,17 +138,17 @@ namespace FirstMVC.Controllers
                 BuyDate = card.BuyDate,
                 CurrentPrice = card.CurrentPrice,
                 Specialty = card.Specialty,
-                SelectedCollections = card.Collections.Select(c => c.Id).ToArray()
+                CollectionName = card.Collections.FirstOrDefault()?.Name // Zet de naam van de collectie
             };
 
-            ViewData["Collections"] = new MultiSelectList(_context.Collections, "Id", "Name", viewModel.SelectedCollections);
+            ViewBag.CollectionName = new SelectList(_context.Collections, "Name", "Name", viewModel.CollectionName);
             return View("CreateEdit", viewModel);
         }
 
         // POST: Cards/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price,Description,Psa,BuyDate,CurrentPrice,Specialty,SelectedCollections")] CardCreateEditViewModel viewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price,Description,Psa,BuyDate,CurrentPrice,Specialty,CollectionName")] CardCreateEditViewModel viewModel)
         {
             if (id != viewModel.ID)
             {
@@ -171,9 +173,9 @@ namespace FirstMVC.Controllers
                     card.CurrentPrice = viewModel.CurrentPrice;
                     card.Specialty = viewModel.Specialty;
 
-                    // Update de collecties
+                    // Update de collectie
                     card.Collections.Clear();
-                    card.Collections = _context.Collections.Where(c => viewModel.SelectedCollections.Contains(c.Id)).ToList();
+                    card.Collections = _context.Collections.Where(c => c.Name == viewModel.CollectionName).ToList();
 
                     _context.Update(card);
                     await _context.SaveChangesAsync();
@@ -192,7 +194,7 @@ namespace FirstMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Collections"] = new MultiSelectList(_context.Collections, "Id", "Name", viewModel.SelectedCollections);
+            ViewBag.CollectionName = new SelectList(_context.Collections, "Name", "Name", viewModel.CollectionName);
             return View("CreateEdit", viewModel);
         }
 

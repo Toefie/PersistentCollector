@@ -47,9 +47,9 @@
 
     <!-- Multiselect voor de Collections -->
     <div class="form-group">
-        <label asp-for="SelectedCollections" class="control-label">Collections</label>
-        <select asp-for="SelectedCollections" asp-items="ViewBag.Collections" class="form-control" multiple="multiple"></select>
-        <span asp-validation-for="SelectedCollections" class="text-danger"></span>
+        <label asp-for="CollectionName" class="control-label">Select Collection</label>
+        <select asp-for="CollectionName" class="form-control" asp-items="ViewBag.CollectionName"></select>
+        <span asp-validation-for="CollectionName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
